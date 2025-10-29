@@ -82,8 +82,6 @@ export function hasPermission(userRole: string, path: string, method: string = '
   // Нормализуем path - убираем начальный/конечный слеш
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
   
-  console.log(`🔍 hasPermission: userRole=${userRole}, normalizedPath=${normalizedPath}, method=${method}, total endpoints=${ALL_ENDPOINTS.length}`);
-  
   // Ищем endpoint в списках
   for (const endpoint of ALL_ENDPOINTS) {
     // Проверяем точное совпадение или что path начинается с endpoint.path
@@ -91,7 +89,6 @@ export function hasPermission(userRole: string, path: string, method: string = '
     const endpointPath = endpoint.path.endsWith('/') ? endpoint.path.slice(0, -1) : endpoint.path;
     
     if (normalizedPath === endpointPath || normalizedPath.startsWith(endpointPath + '/')) {
-      console.log(`✅ Found matching endpoint: ${endpointPath}, roles=${endpoint.roles.join(',')}, hasAccess=${endpoint.roles.includes(userRole)}`);
       // Проверяем метод (если указан)
       if (endpoint.methods && !endpoint.methods.includes(method)) {
         return false;

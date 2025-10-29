@@ -169,10 +169,7 @@ async function handleProxy(
       }
       
       // ПРОВЕРКА ПРАВ ДОСТУПА ПО РОЛЯМ
-      const hasAccess = hasPermission(sessionData.role, path, request.method);
-      console.log(`🔍 Permission check: userRole=${sessionData.role}, path=${path}, method=${request.method}, hasAccess=${hasAccess}`);
-      
-      if (!hasAccess) {
+      if (!hasPermission(sessionData.role, path, request.method)) {
         const allowedRoles = getAllowedRoles(path, request.method);
         console.warn(`🚫 Access denied for ${sessionData.role} (${sessionData.id}) to ${request.method} ${path}`);
         console.warn(`   Allowed roles: ${allowedRoles.join(', ')}`);
