@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_CONFIG } from '@/lib/config';
+import { hasPermission, getAllowedRoles } from '@/lib/api-permissions';
 
 // Указываем что этот route должен работать динамически (не статически)
 export const dynamic = 'force-dynamic';
@@ -164,6 +165,22 @@ async function handleProxy(
         return NextResponse.json(
           { error: 'Unauthorized: Invalid session data - missing required fields' },
           { status: 401 }
+        );
+      }
+      
+      // ПРОВЕРКА ПРАВ ДОСТУПА ПО РОЛЯМ
+      if (!hasPermission(sessionData.role, path, request.method)) {
+        const allowedRoles = getAllowedRoles(path, request.method);
+        console.warn(`🚫 Access denied for ${sessionData.role} (${sessionData.id}) to ${request.method} ${path}`);
+        console.warn(`   Allowed roles: ${allowedRoles.join(', ')}`);
+        
+        return NextResponse.json(
+          { 
+            error: 'Forbidden',
+            message: `Access denied. Required roles: ${allowedRoles.join(', ')}`,
+            user_role: sessionData.role
+          },
+          { status: 403 }
         );
       }
       
