@@ -41,6 +41,73 @@ async function handleProxy(
   pathSegments: string[]
 ) {
   try {
+    // ЗАЩИТА ОТ ЗАПРОСОВ НЕ ИЗ БРАУЗЕРА (Postman, curl, etc.)
+    const origin = request.headers.get('origin');
+    const referer = request.headers.get('referer');
+    const userAgent = request.headers.get('user-agent');
+    const url = new URL(request.url);
+    const allowedHost = url.hostname; // Домен текущего приложения
+    
+    // Проверка User-Agent - должен быть браузер
+    // Postman обычно имеет "PostmanRuntime" в User-Agent
+    // curl обычно имеет "curl" в User-Agent
+    const isKnownNonBrowser = userAgent && (
+      userAgent.includes('PostmanRuntime') ||
+      userAgent.includes('Postman') ||
+      userAgent.includes('curl/') ||
+      userAgent.includes('wget') ||
+      userAgent.includes('python-requests') ||
+      userAgent.includes('axios') ||
+      userAgent.includes('node-fetch') ||
+      userAgent.includes('Go-http-client')
+    );
+    
+    // Проверяем origin - если есть, должен быть с нашего домена
+    let isOriginValid = true;
+    if (origin) {
+      try {
+        const originHost = new URL(origin).hostname;
+        isOriginValid = originHost === allowedHost;
+      } catch (e) {
+        isOriginValid = false;
+      }
+    }
+    
+    // Проверяем referer - если есть, должен быть с нашего домена
+    let isRefererValid = true;
+    if (referer) {
+      try {
+        const refererHost = new URL(referer).hostname;
+        isRefererValid = refererHost === allowedHost;
+      } catch (e) {
+        isRefererValid = false;
+      }
+    }
+    
+    // Блокируем если:
+    // 1. Это точно не браузер (Postman, curl и т.д.)
+    // 2. ИЛИ origin указан, но не с нашего домена
+    // 3. ИЛИ referer указан, но не с нашего домена
+    if (isKnownNonBrowser || !isOriginValid || !isRefererValid) {
+      console.warn(`🚫 Blocked non-browser request:`, {
+        origin,
+        referer,
+        userAgent,
+        url: request.url,
+        isKnownNonBrowser,
+        isOriginValid,
+        isRefererValid
+      });
+      
+      return NextResponse.json(
+        { 
+          error: 'Forbidden: This API can only be accessed from the web application.',
+          message: 'Direct API access is not allowed. Please use the web interface.'
+        },
+        { status: 403 }
+      );
+    }
+    
     // Список публичных endpoints, которые не требуют авторизации (пустой - все требуют авторизацию)
     const publicEndpoints: string[] = [];
     
@@ -109,8 +176,7 @@ async function handleProxy(
       console.log(`🌐 Public endpoint accessed: ${request.method} ${path}`);
     }
     
-    // Определяем на какой сервер идёт запрос
-    const url = new URL(request.url);
+    // Определяем на какой сервер идёт запрос (url уже определен выше)
     // Убираем trailing slash из URL бэкенда, если есть
     const backendBase = (url.searchParams.get('backend') === 'exam' 
       ? API_CONFIG.EXAM_BACKEND 
