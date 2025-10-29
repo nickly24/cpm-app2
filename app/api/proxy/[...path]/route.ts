@@ -41,38 +41,73 @@ async function handleProxy(
   pathSegments: string[]
 ) {
   try {
-    // Проверяем авторизацию - получаем cookie с сессией
-    const authSession = request.cookies.get('auth_session');
+    // Список публичных endpoints, которые не требуют авторизации (пустой - все требуют авторизацию)
+    const publicEndpoints: string[] = [];
     
-    if (!authSession || !authSession.value) {
-      console.warn(`Unauthorized request to proxy: ${request.method} ${request.url}`);
-      return NextResponse.json(
-        { error: 'Unauthorized: No valid session found' },
-        { status: 401 }
-      );
-    }
-
-    // Проверяем валидность сессии (парсим JSON)
-    try {
-      const sessionData = JSON.parse(authSession.value);
+    const path = pathSegments.join('/');
+    const isPublicEndpoint = publicEndpoints.some(endpoint => path.startsWith(endpoint));
+    
+    // Если endpoint не публичный, строго проверяем авторизацию
+    if (!isPublicEndpoint) {
+      // Проверяем авторизацию - получаем cookie с сессией
+      const authSession = request.cookies.get('auth_session');
       
-      // Проверяем наличие обязательных полей
-      if (!sessionData.role || !sessionData.id || !sessionData.full_name) {
-        console.warn(`Invalid session data: ${JSON.stringify(sessionData)}`);
+      // Логируем все cookies для отладки (только в dev)
+      if (process.env.NODE_ENV === 'development') {
+        const allCookies = request.cookies.getAll();
+        console.log('All cookies:', allCookies.map(c => c.name));
+      }
+      
+      if (!authSession || !authSession.value || authSession.value.trim() === '') {
+        console.warn(`❌ Unauthorized request to proxy: ${request.method} ${request.url} - No session cookie found`);
         return NextResponse.json(
-          { error: 'Unauthorized: Invalid session data' },
+          { error: 'Unauthorized: No valid session found. Please log in first.' },
           { status: 401 }
         );
       }
-    } catch (parseError) {
-      console.error('Failed to parse session cookie:', parseError);
-      return NextResponse.json(
-        { error: 'Unauthorized: Invalid session format' },
-        { status: 401 }
-      );
-    }
 
-    const path = pathSegments.join('/');
+      // Проверяем валидность сессии (парсим JSON)
+      let sessionData;
+      try {
+        sessionData = JSON.parse(authSession.value);
+      } catch (parseError) {
+        console.error('❌ Failed to parse session cookie:', parseError);
+        return NextResponse.json(
+          { error: 'Unauthorized: Invalid session format' },
+          { status: 401 }
+        );
+      }
+      
+      // Строгая проверка наличия обязательных полей
+      if (!sessionData || typeof sessionData !== 'object') {
+        console.warn(`❌ Invalid session data type: ${typeof sessionData}`);
+        return NextResponse.json(
+          { error: 'Unauthorized: Invalid session data structure' },
+          { status: 401 }
+        );
+      }
+      
+      if (!sessionData.role || !sessionData.id || !sessionData.full_name) {
+        console.warn(`❌ Invalid session data - missing required fields:`, {
+          hasRole: !!sessionData.role,
+          hasId: !!sessionData.id,
+          hasFullName: !!sessionData.full_name,
+          sessionKeys: Object.keys(sessionData)
+        });
+        return NextResponse.json(
+          { error: 'Unauthorized: Invalid session data - missing required fields' },
+          { status: 401 }
+        );
+      }
+      
+      // Логируем успешную авторизацию (только в dev режиме)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`✅ Authorized request from user: ${sessionData.role} (${sessionData.id}) - ${request.method} ${path}`);
+      }
+    } else {
+      // Публичный endpoint - логируем
+      console.log(`🌐 Public endpoint accessed: ${request.method} ${path}`);
+    }
     
     // Определяем на какой сервер идёт запрос
     const url = new URL(request.url);
