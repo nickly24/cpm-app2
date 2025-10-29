@@ -1,0 +1,100 @@
+/* Основные стили кабинета */
+.cabinet {
+  font-family: 'Montserrat', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+/* Шапка */
+.cabinet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.sv-logo {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.user-inf {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Кнопка выхода */
+.logout-button {
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+
+/* Основное содержимое */
+.cabinet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.placeholder h2 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 2rem;
+}
+
+.placeholder p {
+  margin: 0;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .cabinet-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .user-inf {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+

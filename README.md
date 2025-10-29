@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CPM Learning Management System - Next.js
 
-## Getting Started
+Это современное приложение на Next.js с полным сокрытием адресов бэкенд серверов.
 
-First, run the development server:
+## 🎯 Особенности
+
+- ✅ **Полное сокрытие API** - все запросы к бэкенду идут через Next.js API Routes
+- ✅ **SSR Ready** - готово к Server-Side Rendering
+- ✅ **Сохранены все стили** - оригинальный дизайн полностью сохранен
+- ✅ **TypeScript** - типизация для надежности
+- ✅ **Все функции работают** - кабинет студента и админа полностью функциональны
+
+## 🚀 Быстрый старт
 
 ```bash
+# 1. Установите зависимости
+npm install
+
+# 2. Создайте файл .env.local с адресами бэкендов
+cp .env.local.example .env.local
+
+# 3. Запустите dev сервер
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Приложение будет доступно по адресу http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Структура проекта
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+cpm-app2/
+├── app/                      # Next.js App Router
+│   ├── api/                 # API Routes (прокси для бэкенда)
+│   ├── student/             # Кабинет студента
+│   ├── admin/               # Кабинет администратора
+│   └── page.tsx             # Главная страница (логин)
+├── components/              # React компоненты
+│   ├── student/            # Компоненты студента
+│   ├── admin/              # Компоненты админа
+│   └── LoginPage.tsx       # Страница входа
+├── lib/
+│   ├── api.ts              # Клиентская библиотека API
+│   └── config.ts           # Конфигурация (серверная)
+├── contexts/
+│   └── AuthContext.tsx     # Контекст авторизации
+└── public/                 # Статические файлы
+```
 
-## Learn More
+## 🔒 Безопасность
 
-To learn more about Next.js, take a look at the following resources:
+### Скрытие адресов бэкенда
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Все запросы к бэкенду идут через Next.js API Routes:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+Браузер → Next.js API (/api/proxy/...) → Бэкенд сервер
+```
 
-## Deploy on Vercel
+В Network tab DevTools видны только запросы к `localhost:3000/api/...`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Конфигурация
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Адреса бэкендов хранятся в:
+- `.env.local` - для разработки
+- `lib/config.ts` - используется только на сервере
+
+## 🎨 Функционал
+
+### Кабинет студента:
+- 📈 Успеваемость и QR-код
+- 📝 Домашние задания
+- 📊 Тесты
+- 🎓 Экзамены
+- 📅 Посещаемость
+- 🧠 Тренировки
+- 📚 Расписание
+- 📋 Запросы на отгул
+
+### Кабинет администратора:
+- 👥 Управление пользователями
+- 🏫 Учебные группы
+- 📝 Домашние задания
+- 📊 Создание тестов
+- 📈 Результаты и статистика
+- 🎓 Экзамены
+- 📅 Посещаемость
+- 📋 Обработка запросов на отгул
+
+## 🛠 Разработка
+
+```bash
+# Разработка
+npm run dev
+
+# Сборка
+npm run build
+
+# Запуск production версии
+npm start
+```
+
+## 📝 Миграция из cpm-app
+
+Все компоненты и стили из `cpm-app` были адаптированы:
+- Импорты заменены на новые API
+- Добавлена директива `'use client'`
+- Безопасные вызовы localStorage
+- Все CSS модули скопированы
+
+## ✨ Преимущества Next.js
+
+1. **SEO** - готово к поисковой оптимизации
+2. **Производительность** - SSR и автоматическая оптимизация
+3. **Безопасность** - API routes скрывают бэкенд
+4. **Масштабируемость** - легко добавить новые функции
+
+## 📄 Лицензия
+
+Внутренний проект для CPM Learning Management System
+# cpm-app2

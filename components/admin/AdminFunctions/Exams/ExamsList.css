@@ -1,0 +1,58 @@
+.exams-list {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.exams-list h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.exams-container {
+    list-style: none;
+    padding: 0;
+}
+
+.exam-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.exam-info h3 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.exam-info p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    padding: 20px;
+}

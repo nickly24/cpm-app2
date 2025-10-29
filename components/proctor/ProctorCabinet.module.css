@@ -1,0 +1,138 @@
+/* Основные стили кабинета */
+.cabinet {
+  font-family: 'Montserrat', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+/* Шапка */
+.cabinet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.pc-logo {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.user-inf {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Кнопка выхода */
+.logout-button {
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+
+/* Секция студентов */
+.students-section {
+  margin-bottom: 30px;
+}
+
+/* Кнопка переключения списка студентов */
+.toggle-students-btn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.toggle-students-btn:hover {
+  background-color: #2980b9;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Контейнер списка студентов */
+.students-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease;
+  border-radius: 0 0 6px 6px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.students-container.visible {
+  max-height: 1000px; /* Достаточно большое значение для анимации */
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+}
+
+/* Основное содержимое */
+.cabinet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .cabinet-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .user-inf {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .toggle-students-btn {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+}
+
