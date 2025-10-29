@@ -79,6 +79,7 @@ export const ALL_ENDPOINTS: EndpointPermission[] = [
  * Проверяет, имеет ли пользователь доступ к endpoint
  */
 export function hasPermission(userRole: string, path: string, method: string = 'GET'): boolean {
+  console.log('[RBAC] hasPermission called!');
   // Нормализуем path - убираем начальный/конечный слеш
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
   
