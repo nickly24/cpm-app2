@@ -82,6 +82,8 @@ export function hasPermission(userRole: string, path: string, method: string = '
   // Нормализуем path - убираем начальный/конечный слеш
   const normalizedPath = path.replace(/^\/+|\/+$/g, '');
   
+  console.log(`[RBAC] Checking: role=${userRole}, path=${normalizedPath}, method=${method}, endpoints=${ALL_ENDPOINTS.length}`);
+  
   // Ищем endpoint в списках
   for (const endpoint of ALL_ENDPOINTS) {
     // Проверяем точное совпадение или что path начинается с endpoint.path
