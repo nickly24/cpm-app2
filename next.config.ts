@@ -1,8 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Статический экспорт для деплоя на frontend хостинг
-  output: 'export',
   // Конфигурация для Turbopack (Next.js 16)
   // Turbopack автоматически игнорирует серверные модули на клиенте
   turbopack: {},
