@@ -41,13 +41,45 @@ async function handleProxy(
   pathSegments: string[]
 ) {
   try {
+    // Проверяем авторизацию - получаем cookie с сессией
+    const authSession = request.cookies.get('auth_session');
+    
+    if (!authSession || !authSession.value) {
+      console.warn(`Unauthorized request to proxy: ${request.method} ${request.url}`);
+      return NextResponse.json(
+        { error: 'Unauthorized: No valid session found' },
+        { status: 401 }
+      );
+    }
+
+    // Проверяем валидность сессии (парсим JSON)
+    try {
+      const sessionData = JSON.parse(authSession.value);
+      
+      // Проверяем наличие обязательных полей
+      if (!sessionData.role || !sessionData.id || !sessionData.full_name) {
+        console.warn(`Invalid session data: ${JSON.stringify(sessionData)}`);
+        return NextResponse.json(
+          { error: 'Unauthorized: Invalid session data' },
+          { status: 401 }
+        );
+      }
+    } catch (parseError) {
+      console.error('Failed to parse session cookie:', parseError);
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid session format' },
+        { status: 401 }
+      );
+    }
+
     const path = pathSegments.join('/');
     
     // Определяем на какой сервер идёт запрос
     const url = new URL(request.url);
-    const backend = url.searchParams.get('backend') === 'exam' 
+    // Убираем trailing slash из URL бэкенда, если есть
+    const backendBase = (url.searchParams.get('backend') === 'exam' 
       ? API_CONFIG.EXAM_BACKEND 
-      : API_CONFIG.MAIN_BACKEND;
+      : API_CONFIG.MAIN_BACKEND).replace(/\/$/, '');
     
     // Создаём параметры без backend
     const searchParams = new URLSearchParams(url.searchParams);
@@ -55,7 +87,7 @@ async function handleProxy(
     const queryString = searchParams.toString();
     
     // Создаём URL для бэкенда
-    let backendUrl = `${backend}/${path}`;
+    let backendUrl = `${backendBase}/${path}`;
     if (queryString) {
       backendUrl += `?${queryString}`;
     }
