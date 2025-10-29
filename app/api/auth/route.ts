@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_CONFIG } from '@/lib/config';
 
+// Указываем что этот route должен работать динамически (не статически)
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
